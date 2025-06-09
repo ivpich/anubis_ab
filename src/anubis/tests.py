@@ -1,4 +1,7 @@
-"""Core statistical tests used in experiments."""
+"""Core statistical tests used in experiments.
+
+Основные статистические тесты, применяемые в экспериментах.
+"""
 from __future__ import annotations
 import numpy as np
 import pandas as pd
@@ -11,7 +14,10 @@ import bootstrapped.compare_functions as bs_compare
 
 
 def ab_test_bootstrap(a: pd.Series, b: pd.Series, stat: str = "mean", compare_func: str = "difference", n_bootstraps: int = 1000, alpha: float = 0.05) -> tuple:
-    """Bootstrap based comparison of two independent samples."""
+    """Bootstrap based comparison of two independent samples.
+
+    Bootstrap-сравнение двух независимых выборок.
+    """
     if stat not in ("median", "std", "sum", "mean"):
         raise ValueError("stat must be one of 'median', 'std', 'sum', 'mean'")
     if compare_func not in ("percent_change", "difference"):
@@ -34,7 +40,10 @@ def ab_test_bootstrap(a: pd.Series, b: pd.Series, stat: str = "mean", compare_fu
 
 
 def ab_test_nonparametric(a: pd.Series, b: pd.Series, alternative: str = "two-sided", alpha: float = 0.05) -> tuple:
-    """Mann-Whitney U test for independent samples."""
+    """Mann-Whitney U test for independent samples.
+
+    Непараметрический тест Манна–Уитни для независимых выборок.
+    """
     st, pval = scs.mannwhitneyu(a, b, alternative=alternative)
     diff = a.median() - b.median()
     is_sign = pval <= alpha
@@ -42,7 +51,10 @@ def ab_test_nonparametric(a: pd.Series, b: pd.Series, alternative: str = "two-si
 
 
 def ab_test_parametric_continuous(a: pd.Series, b: pd.Series, alternative: str = "two-sided", alpha: float = 0.05) -> tuple:
-    """Two sample t-test for means with variance check."""
+    """Two sample t-test for means with variance check.
+
+    Двухвыборочный t-тест для средних с проверкой дисперсии.
+    """
     stat_l, pval_l = scs.levene(a, b)
     usevar = "pooled" if pval_l > alpha else "unequal"
     st, pval, _ = sms.ttest_ind(a, b, alternative=alternative, usevar=usevar)
@@ -53,7 +65,10 @@ def ab_test_parametric_continuous(a: pd.Series, b: pd.Series, alternative: str =
 
 
 def ab_test_parametric_nominal(a: pd.Series, b: pd.Series, alternative: str = "two-sided", alpha: float = 0.05) -> tuple:
-    """Two sample z-test for proportions."""
+    """Two sample z-test for proportions.
+
+    Двухвыборочный z-тест для долей.
+    """
     size_a, size_b = a.count(), b.count()
     success_a, success_b = a.sum(), b.sum()
     z_stat, pval = ssp.proportions_ztest([success_a, success_b], nobs=[size_a, size_b], alternative=alternative)

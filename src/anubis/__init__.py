@@ -1,4 +1,7 @@
-"""Anubis A/B testing toolkit."""
+"""Anubis A/B testing toolkit.
+
+Инструментарий для проведения A/B-тестов.
+"""
 from . import preprocessing
 from . import power
 from . import tests

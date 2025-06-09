@@ -1,10 +1,16 @@
-"""Implementation of the CUPED variance reduction technique."""
+"""Implementation of the CUPED variance reduction technique.
+
+Реализация метода снижения дисперсии CUPED.
+"""
 import numpy as np
 import pandas as pd
 
 
 def get_cuped_adjusted(A_before: list[float], B_before: list[float], A_after: list[float], B_after: list[float]):
-    """Return CUPED adjusted arrays for A/B samples."""
+    """Return CUPED adjusted arrays for A/B samples.
+
+    Возвращает CUPED-преобразованные выборки A/B.
+    """
     cv = np.cov([A_after + B_after, A_before + B_before])
     theta = cv[0, 1] / cv[1, 1]
     mean_before = np.mean(A_before + B_before)

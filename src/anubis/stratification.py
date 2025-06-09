@@ -1,4 +1,7 @@
-"""Sampling and stratification helpers."""
+"""Sampling and stratification helpers.
+
+Утилиты для выборки и стратификации данных.
+"""
 from __future__ import annotations
 import math
 import numpy as np
@@ -7,7 +10,10 @@ from sklearn.utils import shuffle
 
 
 def get_quantiles(data: pd.DataFrame, cols: list[str]):
-    """Add quantile columns for given fields."""
+    """Add quantile columns for given fields.
+
+    Добавляет колонки с квантилями для указанных признаков.
+    """
     temp = data.copy()
     quantiles = temp.quantile(q=[0.2, 0.4, 0.6, 0.8]).to_dict()
     cols_q = []
@@ -32,7 +38,10 @@ def get_quantiles(data: pd.DataFrame, cols: list[str]):
 
 
 def stratified_sample_rows(data: pd.DataFrame, cols: list[str], id_col: str, n_cohorts: int, n_rows: int, rs: int | None = None):
-    """Return stratified cohorts with roughly equal representation."""
+    """Return stratified cohorts with roughly equal representation.
+
+    Возвращает стратифицированные когорты с примерно равным представлением.
+    """
     experiment = pd.DataFrame(columns=list(data.columns))
     unallocated = pd.DataFrame()
     data = data.set_index(cols)
