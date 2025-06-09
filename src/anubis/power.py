@@ -1,4 +1,7 @@
-"""Power analysis utilities used to plan experiments."""
+"""Power analysis utilities used to plan experiments.
+
+Инструменты анализа мощности, применяемые для планирования экспериментов.
+"""
 from typing import Iterable
 import numpy as np
 import pandas as pd
@@ -8,7 +11,10 @@ import statsmodels.stats.api as sms
 
 
 def get_mde_mean(data: pd.Series, test_size: float = 0.5, alpha: float = 0.05, power: float = 0.8) -> float:
-    """Estimate minimum detectable effect for a mean metric."""
+    """Estimate minimum detectable effect for a mean metric.
+
+    Оценить минимально обнаруживаемый эффект для метрики-среднего значения.
+    """
     n_total = data.count()
     std = data.std()
     z_alpha = scs.norm.ppf(1 - alpha / 2)
@@ -20,7 +26,10 @@ def get_mde_mean(data: pd.Series, test_size: float = 0.5, alpha: float = 0.05, p
 
 
 def get_mde_proportion(data: pd.Series, alpha: float = 0.05, power: float = 0.8) -> float:
-    """Minimum detectable effect for a proportion assuming 50/50 split."""
+    """Minimum detectable effect for a proportion assuming 50/50 split.
+
+    Минимально различимый эффект для доли при равном делении на группы.
+    """
     n = data.count()
     sd = data.std()
     s = np.sqrt((sd ** 2 / n) + (sd ** 2 / n))
@@ -29,14 +38,20 @@ def get_mde_proportion(data: pd.Series, alpha: float = 0.05, power: float = 0.8)
 
 
 def estimate_sample_size(effect_size: float, data: pd.Series, alpha: float = 0.05, power: float = 0.8) -> float:
-    """Sample size for detecting ``effect_size`` in a mean metric."""
+    """Sample size for detecting ``effect_size`` in a mean metric.
+
+    Требуемый объём выборки для обнаружения ``effect_size`` в средней метрике.
+    """
     sd = data.std()
     m = (norm.ppf(q=1 - alpha / 2) + norm.ppf(q=power)) ** 2
     return 2 * m * sd ** 2 / effect_size ** 2
 
 
 def min_sample_size_nominal(bcr: float, mde: float, alpha: float = 0.05, power: float = 0.8) -> int:
-    """Sample size for two-proportion z-test."""
+    """Sample size for two-proportion z-test.
+
+    Требуемый размер выборки для z-теста двух долей.
+    """
     standard_norm = scs.norm(0, 1)
     z_beta = standard_norm.ppf(power)
     z_alpha = standard_norm.ppf(1 - alpha / 2)
@@ -46,7 +61,10 @@ def min_sample_size_nominal(bcr: float, mde: float, alpha: float = 0.05, power: 
 
 
 def min_sample_size_nominal_in_r(bcr: float, mde: float, alpha: float = 0.05, power: float = 0.8) -> int:
-    """Replicates ``pwr.2p.test`` from R for convenience."""
+    """Replicates ``pwr.2p.test`` from R for convenience.
+
+    Аналог ``pwr.2p.test`` из R для удобства.
+    """
     prop = bcr + mde
     effect_size = sms.proportion_effectsize(bcr, prop)
     sample_size = sms.NormalIndPower().solve_power(effect_size, power=power, alpha=alpha, ratio=1)
@@ -54,7 +72,10 @@ def min_sample_size_nominal_in_r(bcr: float, mde: float, alpha: float = 0.05, po
 
 
 def sample_power_difftest(d: float, s: float, power: float = 0.8, sig: float = 0.05) -> int:
-    """Size calculation based on difference in means."""
+    """Size calculation based on difference in means.
+
+    Вычисление объёма выборки по разнице средних.
+    """
     z = norm.isf([sig / 2])
     zp = -1 * norm.isf([power])
     n = s * ((zp + z) ** 2) / (d ** 2)
@@ -62,7 +83,10 @@ def sample_power_difftest(d: float, s: float, power: float = 0.8, sig: float = 0
 
 
 def min_sample_size_continuous(X: Iterable[float], mde: float, alpha: float = 0.05, power: float = 0.8) -> float:
-    """Sample size estimate for t-test of a continuous metric."""
+    """Sample size estimate for t-test of a continuous metric.
+
+    Оценка размера выборки для t-теста непрерывной метрики.
+    """
     def get_c(alpha: float, power: float) -> float:
         data = [{"0.05": 7.85, "0.01": 11.68}, {"0.05": 10.51, "0.01": 14.88}]
         df = pd.DataFrame(data, index=["0.8", "0.9"])
@@ -74,7 +98,10 @@ def min_sample_size_continuous(X: Iterable[float], mde: float, alpha: float = 0.
 
 
 def min_sample_size_continuous_nonparametric(X: Iterable[float], mde: float, alpha: float = 0.05, power: float = 0.8) -> float:
-    """Sample size for a non-parametric alternative to the t-test."""
+    """Sample size for a non-parametric alternative to the t-test.
+
+    Расчёт размера выборки для непараметрической альтернативы t-тесту.
+    """
     sd = np.std(X, ddof=1)
     n = 1.15 * 2 * (sd ** 2) * ((scs.norm.ppf(1 - alpha / 2) + scs.norm.ppf(power)) ** 2) / (mde ** 2)
     return n

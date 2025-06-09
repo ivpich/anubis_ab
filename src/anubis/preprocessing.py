@@ -1,7 +1,7 @@
 """Data preprocessing utilities for Anubis.
 
-This module contains helper functions for cleaning and transforming raw
-experiment data.
+Инструменты предварительной обработки данных. Модуль содержит вспомогательные
+функции для очистки и трансформации данных экспериментов.
 """
 from typing import Tuple
 import numpy as np
@@ -12,6 +12,8 @@ from scipy.special import inv_boxcox
 
 def remove_outlier(df: pd.DataFrame, column: str, low: float = 0.05, high: float = 0.95) -> pd.Index:
     """Return index of rows without outliers.
+
+    Возвращает индексы строк без выбросов.
 
     Parameters
     ----------
@@ -30,7 +32,10 @@ def remove_outlier(df: pd.DataFrame, column: str, low: float = 0.05, high: float
 
 
 def remove_outlier_interquartil(df: pd.DataFrame, column: str) -> pd.DataFrame:
-    """Remove outliers based on IQR rule."""
+    """Remove outliers based on IQR rule.
+
+    Удаляет выбросы с использованием правила межквартильного размаха.
+    """
     q1 = df[column].quantile(0.25)
     q3 = df[column].quantile(0.75)
     iqr = q3 - q1
@@ -41,6 +46,8 @@ def remove_outlier_interquartil(df: pd.DataFrame, column: str) -> pd.DataFrame:
 
 def box_cox_transform(x: pd.Series, lmbda: float | None = None) -> Tuple[pd.Series, float]:
     """Apply Box-Cox transformation.
+
+    Применяет преобразование Бокса–Кокса.
 
     Parameters
     ----------

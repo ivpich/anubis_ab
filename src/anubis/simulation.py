@@ -1,11 +1,17 @@
-"""Utilities for synthetic experiments and error estimation."""
+"""Utilities for synthetic experiments and error estimation.
+
+Утилиты для синтетических экспериментов и оценки ошибок.
+"""
 import numpy as np
 from scipy import stats
 from .power import estimate_sample_size
 
 
 def run_synthetic_experiments(values, sample_size, effect=0, n_iter=10000):
-    """Run synthetic experiments and return list of p-values."""
+    """Run synthetic experiments and return list of p-values.
+
+    Запустить синтетические эксперименты и вернуть список ``p``-значений.
+    """
     pvalues = []
     for _ in range(n_iter):
         a, b = np.random.choice(values, size=(2, sample_size,), replace=False)
@@ -16,14 +22,20 @@ def run_synthetic_experiments(values, sample_size, effect=0, n_iter=10000):
 
 
 def estimate_ci_bernoulli(p: float, n: int, alpha: float = 0.05):
-    """Confidence interval for Bernoulli proportion."""
+    """Confidence interval for Bernoulli proportion.
+
+    Доверительный интервал для параметра Бернулли.
+    """
     t = stats.norm.ppf(1 - alpha / 2, loc=0, scale=1)
     std_n = np.sqrt(p * (1 - p) / n)
     return p - t * std_n, p + t * std_n
 
 
 def print_estimated_errors(pvalues_aa, pvalues_ab, alpha: float):
-    """Print estimated error rates for synthetic experiments."""
+    """Print estimated error rates for synthetic experiments.
+
+    Вывести оценённые уровни ошибок для синтетических экспериментов.
+    """
     first = np.mean(pvalues_aa < alpha)
     second = np.mean(pvalues_ab >= alpha)
     ci_first = estimate_ci_bernoulli(first, len(pvalues_aa))
